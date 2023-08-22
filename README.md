@@ -82,12 +82,12 @@ sudo systemctl start dc-rpi-remote-pc-start.service
 ## Available commands
 _NOTE! The default prefix is !. The prefix must be used before the command for it to work._
 
-COMMANDS FOR TRIBELEADER
-* **addmember @user** - adds the memberrole to a user
-* **kickmember @user** - removes the member role of a user
+COMMANDS FOR SET ROLE
+* **post** - turns the connected computer on
+* **shutdown** - turns the connected computer off safely
+* **status** - tells if the connected computer is turned on or off
 
 COMMANDS FOR ADMINISTRATOR
-* **addtribe [tribename] @leaderRole @memberRole** - register a new tribe in the bot
-* **rmtribe [tribename]** - remove a registered tribe from the bot
-* **listalltribes** - outputs a list of all currently registered tribes
+* **force-shutdown** - forces the connected computer to turn off instantly
+* **setchannel** - will set bot command channel to current channel
 * **reload** - reload all external configuration files
