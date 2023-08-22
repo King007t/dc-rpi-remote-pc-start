@@ -130,7 +130,7 @@ client.on("messageCreate", (msg) => {
 				return;
 			}
 
-			cp.exec(__dirname + "/shellscripts/post.sh", function(err, stdout, stderr) => {
+			cp.exec(__dirname + "/shellscripts/post.sh", function(err, stdout, stderr) {
 				console.log(stdout);
 				console.log(stderr);
 
@@ -162,7 +162,7 @@ client.on("messageCreate", (msg) => {
 				return;
 			}
 
-			cp.exec(__dirname + "/shellscripts/reboot.sh", function(err, stdout, stderr) => {
+			cp.exec(__dirname + "/shellscripts/reboot.sh", function(err, stdout, stderr) {
 				console.log(stdout);
 				console.log(stderr);
 
@@ -192,7 +192,7 @@ client.on("messageCreate", (msg) => {
 				return;
 			}
 
-			cp.exec(__dirname + "/shellscripts/shutdown.sh", function(err, stdout, stderr) => {
+			cp.exec(__dirname + "/shellscripts/shutdown.sh", function(err, stdout, stderr) {
 				console.log(stdout);
 				console.log(stderr);
 
@@ -219,7 +219,7 @@ client.on("messageCreate", (msg) => {
 				return;
 			}
 
-			cp.exec(__dirname + "/shellscripts/force-shutdown.sh", function(err, stdout, stderr) => {
+			cp.exec(__dirname + "/shellscripts/force-shutdown.sh", function(err, stdout, stderr) {
 				console.log(stdout);
 				console.log(stderr);
 
