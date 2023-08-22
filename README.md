@@ -84,6 +84,7 @@ _NOTE! The default prefix is !. The prefix must be used before the command for i
 
 COMMANDS FOR SET ROLE
 * **post** - turns the connected computer on
+* **reboot** - reboots the connected computer
 * **shutdown** - turns the connected computer off safely
 * **status** - tells if the connected computer is turned on or off
 
