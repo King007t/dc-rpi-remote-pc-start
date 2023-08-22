@@ -87,7 +87,7 @@ client.on("messageCreate", (msg) => {
 				return;
 			}
 
-			var help = `**__USABLE COMMANDS__**\n1. \`\`${prefix}post\`\`\n2. \`\`${prefix}shutdown\`\`\n3. \`\`${prefix}status\`\``;
+			var help = `**__USABLE COMMANDS__**\n1. \`\`${prefix}post\`\`\n2. \`\`${prefix}reboot\`\`\n3. \`\`${prefix}shutdown\`\`\n4. \`\`${prefix}status\`\``;
 
 			if (msg.member.permissions.has("ADMINISTRATOR")) {
 				help += `\n\n**__COMMANDS FOR ADMINISTRATOR__**\n1. \`\`${prefix}force-shutdown\`\`\n2. \`\`${prefix}setchannel\`\`\n3. \`\`${prefix}reload\`\``;
@@ -130,13 +130,49 @@ client.on("messageCreate", (msg) => {
 				return;
 			}
 
-			cp.exec(__dirname + "/shellscripts/post.sh", function(err, stdout, stderr) {
-			// handle err, stdout, stderr
+			cp.exec(__dirname + "/shellscripts/post.sh", function(err, stdout, stderr) => {
+				console.log(stdout);
+				console.log(stderr);
+
+				if (err != null) {
+					sendMessage(msg.channel, `An error occured :exclamation: \n\`\`${err}\`\``, globalsec * 2);
+					return;
+				}
 			});
 
 			config.status = "on";
 			save(__dirname + "/config.json", config);
 			sendMessage(msg.channel, `The server is posting now. :white_check_mark:`, globalsec);
+		break;
+
+		case ("reboot"):
+
+			if (required_role.use && !msg.member.roles.cache.find(role => role.name === required_role.name)) {
+				sendMessage(msg.channel, `Sorry, you don't have the right privileges. Use \`\`${prefix}help\`\` for available commands`, globalsec);
+				return;
+			}
+
+			if (args.length != 1) {
+				sendMessage(msg.channel, `This command functions without arguments. Please use \`\`${prefix}help\`\``, globalsec);
+				return;
+			}
+
+			if (config.status == "off") {
+				sendMessage(msg.channel, `The server is shut down. Use \`\`${prefix}post\`\` instead. :octagonal_sign:`, globalsec);
+				return;
+			}
+
+			cp.exec(__dirname + "/shellscripts/reboot.sh", function(err, stdout, stderr) => {
+				console.log(stdout);
+				console.log(stderr);
+
+				if (err != null) {
+					sendMessage(msg.channel, `An error occured :exclamation: \n\`\`${err}\`\``, globalsec * 2);
+					return;
+				}
+			});
+
+			sendMessage(msg.channel, `The server is rebooting now. :recycle:`, globalsec);
 		break;
 
 		case ("shutdown"):
@@ -156,8 +192,14 @@ client.on("messageCreate", (msg) => {
 				return;
 			}
 
-			cp.exec(__dirname + "/shellscripts/shutdown.sh", function(err, stdout, stderr) {
-			// handle err, stdout, stderr
+			cp.exec(__dirname + "/shellscripts/shutdown.sh", function(err, stdout, stderr) => {
+				console.log(stdout);
+				console.log(stderr);
+
+				if (err != null) {
+					sendMessage(msg.channel, `An error occured :exclamation: \n\`\`${err}\`\``, globalsec * 2);
+					return;
+				}
 			});
 
 			config.status = "off";
@@ -177,8 +219,14 @@ client.on("messageCreate", (msg) => {
 				return;
 			}
 
-			cp.exec(__dirname + "/shellscripts/force-shutdown.sh", function(err, stdout, stderr) {
-			// handle err, stdout, stderr
+			cp.exec(__dirname + "/shellscripts/force-shutdown.sh", function(err, stdout, stderr) => {
+				console.log(stdout);
+				console.log(stderr);
+
+				if (err != null) {
+					sendMessage(msg.channel, `An error occured :exclamation: \n\`\`${err}\`\``, globalsec * 2);
+					return;
+				}
 			});
 
 			config.status = "off";
