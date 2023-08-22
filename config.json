@@ -1,0 +1,11 @@
+{
+	"prefix":"!",
+	"token":"random_characters",
+	"globalsec":"5",
+	"status":"off",
+	"channel":"random_characters",
+	"required_role": {
+		"use":true,
+		"name":"ServerManager"
+	}
+}
