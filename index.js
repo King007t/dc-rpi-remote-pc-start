@@ -376,8 +376,20 @@ function aftershutoff(c) {
 
 function afterreboot(c) {
 
-	afterrebootoff();
-	afterrebooton(c);
+	cp.exec("ping -c 3 " + serverip, function(err, stdout, stderr) {
+		console.log(stdout);
+		console.log(stderr);
+
+		if (err != null) {
+			afterrebooton(c);
+			return;
+		}
+
+		else {
+			afterreboot(c);
+			return;
+		}
+	});
 }
 
 function afterrebooton(c) {
@@ -395,23 +407,6 @@ function afterrebooton(c) {
 			config.status = "on";
 			save(__dirname + "/config.json", config);
 			sendMessage(c, `The reboot was succesful. The server is online. :white_check_mark:`, globalsec);
-			return;
-		}
-	});
-}
-
-function afterrebootoff() {
-
-	cp.exec("ping -c 3 " + serverip, function(err, stdout, stderr) {
-		console.log(stdout);
-		console.log(stderr);
-
-		if (err != null) {
-			return;
-		}
-
-		else {
-			afterrebootoff();
 			return;
 		}
 	});
