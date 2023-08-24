@@ -93,4 +93,4 @@ COMMANDS FOR ADMINISTRATOR
 * **force-shutdown** - forces the connected computer to turn off instantly
 * **setchannel** - will set bot command channel to current channel
 * **reload** - reload all external configuration files
-* **ping** - pings the provided ip adress and updates the server status
+* **ping** - pings the provided ip adress
