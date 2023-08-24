@@ -109,7 +109,7 @@ client.on("messageCreate", (msg) => {
 				return;
 			}
 
-			sendMessage(msg.channel, "The Server is currently " + (config.status == "on" ? "online. :white_check_mark:" : config.status == "posting" ? "posting. :warning:" : config.status == "shutting" ? "shutting down. :warning:" :config.status == "rebooting" ? "rebooting. :warning:" : "offline. :octagonal_sign:"), globalsec);
+			sendMessage(msg.channel, "The server is currently " + (config.status == "on" ? "online. :white_check_mark:" : config.status == "posting" ? "posting. :warning:" : config.status == "shutting" ? "shutting down. :warning:" :config.status == "rebooting" ? "rebooting. :warning:" : "offline. :octagonal_sign:"), globalsec);
 		break;
 
 		case ("post"):
