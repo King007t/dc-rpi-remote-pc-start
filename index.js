@@ -109,7 +109,7 @@ client.on("messageCreate", (msg) => {
 				return;
 			}
 
-			sendMessage(msg.channel, "The Server is currently " + (config.status == "on" ? "online :white_check_mark:" : "offline :octagonal_sign:"), globalsec);
+			sendMessage(msg.channel, "The Server is currently " + (config.status == "on" ? "online. :white_check_mark:" : config.status == "posting" ? "posting. :warning:" : config.status == "shutting" ? "shutting down. :warning:" :config.status == "rebooting" ? "rebooting. :warning:" : "offline. :octagonal_sign:"), globalsec);
 		break;
 
 		case ("post"):
@@ -124,14 +124,19 @@ client.on("messageCreate", (msg) => {
 				return;
 			}
 
-			if (config.status == "on") {
-				sendMessage(msg.channel, `The server is already up and running. :white_check_mark:`, globalsec);
+			if (config.status != "off") {
+
+				if (config.status == "on") {
+					sendMessage(msg.channel, `The server is already up and running. :white_check_mark:`, globalsec);
+				} 
+
+				else {
+					preoperr(msg.channel);
+				}
 				return;
 			}
 
 			cp.exec(__dirname + "/shellscripts/post.sh", function(err, stdout, stderr) {
-				console.log(stdout);
-				console.log(stderr);
 
 				if (err != null) {
 					sendMessage(msg.channel, `An error occured :exclamation: \n\`\`${err}\`\``, globalsec * 2);
@@ -139,9 +144,11 @@ client.on("messageCreate", (msg) => {
 				}
 			});
 
-			config.status = "on";
+			sendMessage(msg.channel, `The server is posting now. :warning:`, globalsec);
+			config.status = "posting";
 			save(__dirname + "/config.json", config);
-			sendMessage(msg.channel, `The server is posting now. :white_check_mark:`, globalsec);
+
+			afterposton(msg.channel);
 		break;
 
 		case ("reboot"):
@@ -156,8 +163,16 @@ client.on("messageCreate", (msg) => {
 				return;
 			}
 
-			if (config.status == "off") {
-				sendMessage(msg.channel, `The server is shut down. Use \`\`${prefix}post\`\` instead. :octagonal_sign:`, globalsec);
+			if (config.status != "on") {
+
+				if (config.status == "off") {
+					sendMessage(msg.channel, `The server is shut down. Use \`\`${prefix}post\`\` instead. :octagonal_sign:`, globalsec);
+				}
+
+				else {
+					preoperr(msg.channel);
+				}
+
 				return;
 			}
 
@@ -171,7 +186,11 @@ client.on("messageCreate", (msg) => {
 				}
 			});
 
-			sendMessage(msg.channel, `The server is rebooting now. :recycle:`, globalsec);
+			sendMessage(msg.channel, `The server is rebooting now. :warning:`, globalsec);
+			config.status = "rebooting";
+			save(__dirname + "/config.json", config);
+
+			afterreboot(msg.channel);
 		break;
 
 		case ("shutdown"):
@@ -186,8 +205,15 @@ client.on("messageCreate", (msg) => {
 				return;
 			}
 
-			if (config.status == "off") {
-				sendMessage(msg.channel, `The server is already shut down. :octagonal_sign:`, globalsec);
+			if (config.status != "on") {
+				if (config.status == "off") {
+					sendMessage(msg.channel, `The server is already shut down. :octagonal_sign:`, globalsec);
+				}
+
+				else {
+					preoperr(msg.channel);
+				}
+
 				return;
 			}
 
@@ -201,9 +227,11 @@ client.on("messageCreate", (msg) => {
 				}
 			});
 
-			config.status = "off";
+			config.status = "shutting";
 			save(__dirname + "/config.json", config);
-			sendMessage(msg.channel, `The server is shutting down now. :octagonal_sign:`, globalsec);
+			sendMessage(msg.channel, `The server is shutting down now. :warning:`, globalsec);
+
+			aftershutoff(msg.channel);
 		break;		
 
 		case ("force-shutdown"):
@@ -251,15 +279,11 @@ client.on("messageCreate", (msg) => {
 
 				if (err != null) {
 					sendMessage(msg.channel, `An error occured :exclamation: \n\`\`${err}\`\``, globalsec * 2);
-					config.status = "off";
-					save(__dirname + "/config.json", config);
 					return;
 				}
 
 				else {
 					sendMessage(msg.channel, `The Server is currently online :white_check_mark:\n\`\`${stdout}\`\``, globalsec * 2);
-					config.status = "on";
-					save(__dirname + "/config.json", config);
 					return;
 				}
 			});
@@ -292,6 +316,108 @@ client.on("messageCreate", (msg) => {
 		break;
 	}
 });
+
+// ------------------------
+
+function preoperr(c) {
+
+	if (config.status == "posting") {
+		sendMessage(c, `The server is currently posting. :warning:\nPlease wait for the previous operation to finish!`, globalsec);
+	}
+
+	else if (config.status == "shutting") {
+		sendMessage(c, `The server is currently shutting down. :warning:\nPlease wait for the previous operation to finish!`, globalsec);
+	}
+
+	else {
+		sendMessage(c, `The server is currently rebooting. :warning:\nPlease wait for the previous operation to finish!`, globalsec);
+	}
+	
+	return;
+}
+
+function afterposton(c) {
+	cp.exec("ping -c 3 " + serverip, function(err, stdout, stderr) {
+		console.log(stdout);
+		console.log(stderr);
+
+		if (err != null) {
+			afterposton(c);
+			return;
+		}
+
+		else {
+			config.status = "on";
+			save(__dirname + "/config.json", config);
+			sendMessage(c, `The post was succesful. The server is online. :white_check_mark:`, globalsec);
+			return;
+		}
+	});
+}
+
+function aftershutoff(c) {
+	cp.exec("ping -c 3 " + serverip, function(err, stdout, stderr) {
+		console.log(stdout);
+		console.log(stderr);
+
+		if (err != null) {
+			config.status = "off";
+			save(__dirname + "/config.json", config);
+			sendMessage(c, `The shutdown was succesful. The server is offline. :octagonal_sign:`, globalsec);
+			return;
+		}
+
+		else {
+			aftershutoff(c);
+			return;
+		}
+	});
+}
+
+function afterreboot(c) {
+
+	afterrebootoff();
+	afterrebooton(c);
+}
+
+function afterrebooton(c) {
+
+	cp.exec("ping -c 3 " + serverip, function(err, stdout, stderr) {
+		console.log(stdout);
+		console.log(stderr);
+
+		if (err != null) {
+			afterrebooton(c);
+			return;
+		}
+
+		else {
+			config.status = "on";
+			save(__dirname + "/config.json", config);
+			sendMessage(c, `The reboot was succesful. The server is online. :white_check_mark:`, globalsec);
+			return;
+		}
+	});
+}
+
+function afterrebootoff() {
+
+	cp.exec("ping -c 3 " + serverip, function(err, stdout, stderr) {
+		console.log(stdout);
+		console.log(stderr);
+
+		if (err != null) {
+			return;
+		}
+
+		else {
+			afterrebootoff();
+			return;
+		}
+	});
+}
+
+// ------------------------
 
 function save(fileName, obj) {
 
