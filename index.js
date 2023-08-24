@@ -11,6 +11,7 @@ var token = "";
 var globalsec = "";
 var required_role = "";
 var channelid = "";
+var serverip = "";
 
 //Load config
 var config = require("./config.json");
@@ -90,18 +91,16 @@ client.on("messageCreate", (msg) => {
 			var help = `**__USABLE COMMANDS__**\n1. \`\`${prefix}post\`\`\n2. \`\`${prefix}reboot\`\`\n3. \`\`${prefix}shutdown\`\`\n4. \`\`${prefix}status\`\``;
 
 			if (msg.member.permissions.has("ADMINISTRATOR")) {
-				help += `\n\n**__COMMANDS FOR ADMINISTRATOR__**\n1. \`\`${prefix}force-shutdown\`\`\n2. \`\`${prefix}setchannel\`\`\n3. \`\`${prefix}reload\`\``;
+				help += `\n\n**__COMMANDS FOR ADMINISTRATOR__**\n1. \`\`${prefix}force-shutdown\`\`\n2. \`\`${prefix}setchannel\`\`\n3. \`\`${prefix}reload\`\`\n4. \`\`${prefix}ping\`\``;
 			}
 
 			sendMessage(msg.channel, help, globalsec * 2);
 		break;
 
 		case ("status"):
-			
-			
 		
 			if (required_role.use && !msg.member.roles.cache.find(role => role.name === required_role.name)) {
-				sendMessage(msg.channel, `Sorry, you don't have the right privileges. You can ask a Staff member for help.`, globalsec);
+				sendMessage(msg.channel, `Sorry, you don't have the right privileges. Use \`\`${prefix}help\`\` for available commands`, globalsec);
 				return;
 			}
 
@@ -234,6 +233,38 @@ client.on("messageCreate", (msg) => {
 			sendMessage(msg.channel, `The server is being forced to shut down now. :octagonal_sign:`, globalsec);
 		break;
 
+		case ("ping"):
+
+			if (!msg.member.permissions.has('ADMINISTRATOR')) {
+				sendMessage(msg.channel, `You dont have the permission to use this command. Use \`\`${prefix}help\`\` for available commands or ask a Staff member for help`, globalsec);
+				return;
+			}
+
+			if (args.length != 1) {
+				sendMessage(msg.channel, `This command functions without arguments. Please use \`\`${prefix}help\`\``, globalsec);
+				return;
+			}
+
+			cp.exec("ping -c 3 " + serverip, function(err, stdout, stderr) {
+				console.log(stdout);
+				console.log(stderr);
+
+				if (err != null) {
+					sendMessage(msg.channel, `An error occured :exclamation: \n\`\`${err}\`\``, globalsec * 2);
+					config.status = "off";
+					save(__dirname + "/config.json", config);
+					return;
+				}
+
+				else {
+					sendMessage(msg.channel, `The Server is currently online :white_check_mark:\n\`\`${stdout}\`\``, globalsec * 2);
+					config.status = "on";
+					save(__dirname + "/config.json", config);
+					return;
+				}
+			});
+		break;	
+
 		case ("reload"):
 
 			if (!msg.member.permissions.has('ADMINISTRATOR')) {
@@ -280,6 +311,7 @@ function loadconfig() {
 	globalsec = config.globalsec;
 	channelid = config.channel;
 	required_role = config.required_role;
+	serverip = config.serverip;
 }
 
 async function sendMessage(c, text, sec) {
