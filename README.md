@@ -22,7 +22,7 @@ Your config file (config.json) will look something like this:
 {
 	"prefix":"!",			//prefix for recognition of bot commands
 	"token":"random_characters",	//discord bot token to connect to
-	"globalsec":"5"			//seconds a message from the bot will be displayed
+	"globalsec":"5",		//seconds a message from the bot will be displayed
 	"status":"off",			//current status of the server "off" or "on"
 	"channel":"",			//can be left blank (can be added by sending the **setchannel** command into the desired channel)
 	"serverip":"0.0.0.0",		//local ip adress of the computer to be controlled
