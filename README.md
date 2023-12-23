@@ -56,6 +56,7 @@ StartLimitInterval=60s
 StartLimitBurst=3
 User=[username]
 Group=[username]
+Environment=TERM=xterm
 ExecStart=node /home/[username]/dc-rpi-remote-pc-start/
 ExecReload=/bin/kill -s HUP $MAINPID
 ExecStop=/bin/kill -s TERM $MAINPID
