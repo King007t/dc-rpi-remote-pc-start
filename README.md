@@ -2,7 +2,7 @@
 bridge between discord and a raspberry pi to hardware post a connected computer
 
 ## Requirements
-You need NodeJS and NPM installed.
+You need NodeJS and NPM installed. On newer Raspbian versions you will need to install WiringPi manually.
 
 # Hardware Installation
 1 coming soon...
