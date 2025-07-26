@@ -5,7 +5,10 @@ bridge between discord and a raspberry pi to hardware post a connected computer
 You need NodeJS and NPM installed. On newer Raspbian versions you will need to install WiringPi manually.
 
 # Hardware Installation
-1 coming soon...
+1 The PC and Raspberry Pi need to share a common ground.
+This can be achieved by powering the Raspberry Pi directly from the PC’s mainboard.
+Alternatively, you can simply connect their ground pins with a jumper wire.
+<img width="836" height="741" alt="wireup" src="https://github.com/user-attachments/assets/99b33b0a-c3c3-422e-b47e-61746bdb35ff" />
 
 # Software Installation
 1 Start by cloning the repository and installing the packages
